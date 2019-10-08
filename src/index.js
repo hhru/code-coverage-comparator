@@ -31,9 +31,10 @@ function getData(file) {
     });
 }
 
-const masterFile = process.argv[process.argv.findIndex((item) => item === '--path') + 1];
+const masterFile = process.argv[process.argv.findIndex((item) => item === '--path-master') + 1];
+const branchFile = process.argv[process.argv.findIndex((item) => item === '--path-branch') + 1];
 
-Promise.all([getData(path.resolve(__dirname, process.env.COVERAGE_PATH)), getData(masterFile)]).then(
+Promise.all([getData(path.resolve(__dirname, branchFile)), getData(masterFile)]).then(
     ([[branchStatements, branchCoveredStatements], [masterStatements, masterCoveredStatements]]) => {
         const branchPercentage =
             Math.round((branchCoveredStatements / branchStatements) * PERCENTAGE * NUMBERS_AFTER_COMMA_IN_PERCENTAGE) /
