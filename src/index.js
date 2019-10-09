@@ -31,36 +31,37 @@ function getData(file) {
     });
 }
 
-const masterFile = process.argv[process.argv.findIndex((item) => item === '--path-master') + 1];
-const branchFile = process.argv[process.argv.findIndex((item) => item === '--path-branch') + 1];
+module.exports = function(masterFile, branchFile, resultFile) {
+    return Promise.all([getData(branchFile), getData(masterFile)]).then(
+        ([[branchStatements, branchCoveredStatements], [masterStatements, masterCoveredStatements]]) => {
+            const branchPercentage =
+                Math.round(
+                    (branchCoveredStatements / branchStatements) * PERCENTAGE * NUMBERS_AFTER_COMMA_IN_PERCENTAGE
+                ) / NUMBERS_AFTER_COMMA_IN_PERCENTAGE;
+            const masterPercentage =
+                Math.round(
+                    (masterCoveredStatements / masterStatements) * PERCENTAGE * NUMBERS_AFTER_COMMA_IN_PERCENTAGE
+                ) / NUMBERS_AFTER_COMMA_IN_PERCENTAGE;
 
-Promise.all([getData(path.resolve(__dirname, branchFile)), getData(masterFile)]).then(
-    ([[branchStatements, branchCoveredStatements], [masterStatements, masterCoveredStatements]]) => {
-        const branchPercentage =
-            Math.round((branchCoveredStatements / branchStatements) * PERCENTAGE * NUMBERS_AFTER_COMMA_IN_PERCENTAGE) /
-            NUMBERS_AFTER_COMMA_IN_PERCENTAGE;
-        const masterPercentage =
-            Math.round((masterCoveredStatements / masterStatements) * PERCENTAGE * NUMBERS_AFTER_COMMA_IN_PERCENTAGE) /
-            NUMBERS_AFTER_COMMA_IN_PERCENTAGE;
+            const stats = {
+                master: {
+                    statements: masterStatements,
+                    coveredStatements: masterCoveredStatements,
+                    percentage: masterPercentage,
+                },
+                branch: {
+                    statements: branchStatements,
+                    coveredStatements: branchCoveredStatements,
+                    percentage: branchPercentage,
+                },
+                diff: branchPercentage - masterPercentage,
+            };
 
-        const stats = {
-            master: {
-                statements: masterStatements,
-                coveredStatements: masterCoveredStatements,
-                percentage: masterPercentage,
-            },
-            branch: {
-                statements: branchStatements,
-                coveredStatements: branchCoveredStatements,
-                percentage: branchPercentage,
-            },
-            diff: branchPercentage - masterPercentage,
-        };
+            fs.writeFileSync(resultFile, JSON.stringify(stats, '  ', 2));
 
-        fs.writeFileSync(path.resolve(__dirname, 'coverage-stats-report.json'), JSON.stringify(stats, '  ', 2));
-
-        if (branchPercentage - masterPercentage < 0) {
-            throw new Error('Branch has less covered lines of code than master: ', JSON.stringify(stats, '  ', 2));
+            if (branchPercentage - masterPercentage < 0) {
+                throw new Error('Branch has less covered lines of code than master: ', JSON.stringify(stats, '  ', 2));
+            }
         }
-    }
-);
+    );
+};
