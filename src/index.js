@@ -1,5 +1,4 @@
 const fs = require('fs');
-const path = require('path');
 const xml2js = require('xml2js');
 
 const NUMBERS_AFTER_COMMA_IN_PERCENTAGE = 10 ** 2;
