@@ -1,0 +1,22 @@
+{
+    "name": "@hh.ru/code-coverage-comparator",
+    "version": "1.0.0",
+    "description": "Позволяет сравнить два результата code-coverage для дальнейшего уведомления в PR об увеличении или уменьшения процента покрытия кода тестами по сравнению с master.",
+    "main": "src/index.js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/hhru/code-coverage-comparator.git"
+    },
+    "author": "Nikita Mostovoy (nik.mostovoy@gmail.com)",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/hhru/code-coverage-comparator/issues"
+    },
+    "homepage": "https://github.com/hhru/code-coverage-comparator#readme",
+    "dependencies": {
+        "xml2js": "^0.4.22"
+    },
+    "files": [
+        "src"
+    ]
+}
