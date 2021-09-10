@@ -18,5 +18,8 @@
     },
     "files": [
         "src"
-    ]
+    ],
+    "scripts": {
+        "release": "npm release --access=public"
+    }
 }
